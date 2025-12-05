@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão de E-mails</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                <span>MailManager</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-page="dashboard">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            
+            <a href="#" class="nav-item" data-page="pendentes">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>E-mails Pendentes</span>
+                <span class="badge" id="pendingBadge">0</span>
+            </a>
+            
+            <a href="#" class="nav-item" data-page="historico">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                <span>Histórico</span>
+            </a>
+            
+            <a href="#" class="nav-item" data-page="cadastro">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Novo E-mail</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <div class="user-details">
+                    <div class="user-name">Admin</div>
+                    <div class="user-role">Gestor</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="page active" id="dashboard">
+            <div class="page-header">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p class="page-subtitle">Resumo geral - <span id="currentDate"></span></p>
+                </div>
+                <button class="btn btn-primary" onclick="navigateTo('cadastro')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Novo E-mail
+                </button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Total de E-mails</div>
+                        <div class="stat-value" id="totalEmails">0</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Classificados</div>
+                        <div class="stat-value" id="classifiedEmails">0</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Pendentes</div>
+                        <div class="stat-value" id="pendingEmails">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>E-mails por Estado</h3>
+                        <select id="stateChartFilter" class="chart-filter">
+                            <option value="all">Todos os Estados</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="stateChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Tendência - Últimos 7 Dias</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item">
+                                <span class="legend-dot" style="background: #6366f1"></span>
+                                E-mails enviados
+                            </span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-grid">
+                <div class="card">
+                    <h3>Destinatários Top 3</h3>
+                    <div class="top-list" id="topRecipients">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Atalhos Rápidos</h3>
+                    <div class="quick-actions">
+                        <button class="quick-action-btn" onclick="navigateTo('pendentes')">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            Ver Pendentes
+                        </button>
+                        <button class="quick-action-btn" onclick="navigateTo('cadastro')">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Novo Manual
+                        </button>
+                        <button class="quick-action-btn" onclick="navigateTo('historico')">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Exportar Dados
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="pendentes">
+            <div class="page-header">
+                <div>
+                    <h1>E-mails Pendentes</h1>
+                    <p class="page-subtitle">Lista de e-mails aguardando classificação</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-outline" onclick="exportPending()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Exportar
+                    </button>
+                    <button class="btn btn-primary" onclick="saveAllPending()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        Salvar Tudo
+                    </button>
+                </div>
+            </div>
+
+            <div class="filters-bar">
+                <div class="search-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" id="pendingSearch" placeholder="Buscar por remetente ou destinatário..." onkeyup="filterPending()">
+                </div>
+                <input type="date" id="pendingDateFilter" onchange="filterPending()">
+            </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="selectAllPending" onchange="toggleSelectAll(this)">
+                            </th>
+                            <th>Remetente</th>
+                            <th>Destinatário</th>
+                            <th>Data</th>
+                            <th>Estado</th>
+                            <th>Município</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="page" id="historico">
+            <div class="page-header">
+                <div>
+                    <h1>Histórico de E-mails</h1>
+                    <p class="page-subtitle">Todos os e-mails classificados</p>
+                </div>
+                <button class="btn btn-outline" onclick="exportHistory()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Exportar
+                </button>
+            </div>
+
+            <div class="filters-bar">
+                <div class="search-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" id="historySearch" placeholder="Digite para pesquisar..." onkeyup="filterHistory()">
+                </div>
+                <input type="date" id="historyDateFilter" onchange="filterHistory()">
+                <select id="historyStateFilter" onchange="filterHistory()">
+                    <option value="">Todos os Estados</option>
+                </select>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Remetente</th>
+                            <th>Destinatário</th>
+                            <th>Assunto</th>
+                            <th>Data</th>
+                            <th>Local</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="page" id="cadastro">
+            <div class="page-header">
+                <div>
+                    <h1>Novo E-mail Manual</h1>
+                    <p class="page-subtitle">Preencha os dados do envio</p>
+                </div>
+            </div>
+
+            <div class="form-container">
+                <form id="emailForm" onsubmit="handleSubmit(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="sender">Remetente *</label>
+                            <input type="email" id="sender" required placeholder="usuario@empresa.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient">Destinatário *</label>
+                            <input type="email" id="recipient" required placeholder="cliente@dominio.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emailDate">Data *</label>
+                            <input type="date" id="emailDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emailTime">Hora *</label>
+                            <input type="time" id="emailTime" required>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="subject">Assunto *</label>
+                            <input type="text" id="subject" required placeholder="Digite o assunto do e-mail">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="body">Corpo da mensagem *</label>
+                            <textarea id="body" rows="6" required placeholder="Digite a mensagem do e-mail"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="state">Estado (UF) *</label>
+                            <select id="state" required onchange="loadCities()">
+                                <option value="">Selecione o estado</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">Município *</label>
+                            <select id="city" required>
+                                <option value="">Selecione o município</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="resetForm()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Salvar E-mail
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal" id="detailsModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Detalhes do E-mail</h2>
+                    <button class="modal-close" onclick="closeModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                </div>
+            </div>
+        </div>
+
+        <div class="toast-container" id="toastContainer"></div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
