@@ -28,6 +28,32 @@ const statesData = {
   TO: ["Palmas", "Araguaína", "Gurupi"],
 };
 
+async function loadCities() {
+  const state = document.getElementById("state").value;
+  const citySelect = document.getElementById("city");
+
+  citySelect.innerHTML = "<option value='all'>Todas as Cidades</option>";
+
+  if (state === "all") return;
+
+  try {
+    const res = await fetch(
+      `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${state}/municipios`
+    );
+    const data = await res.json();
+
+    data.forEach(cidade => {
+      const option = document.createElement("option");
+      option.value = cidade.nome;
+      option.textContent = cidade.nome;
+      citySelect.appendChild(option);
+    });
+
+  } catch (err) {
+    console.error("Erro ao carregar cidades do IBGE:", err);
+  }
+}
+
 let emails = [];
 const charts = {};
 
@@ -62,7 +88,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupNavigation();
   setupSidebar();
   updateDashboard();
-  populateStateSelects();
 });
 
 function initializeApp() {
@@ -212,9 +237,6 @@ function updateTopRecipients() {
     .join("");
 }
 
-// ===============================
-//  TELA — PENDENTES
-// ===============================
 function renderPendingEmails() {
   const pending = emails.filter((e) => !e.classified);
   const tbody = document.getElementById("pendingTableBody");
