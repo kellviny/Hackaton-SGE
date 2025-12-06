@@ -154,13 +154,16 @@ function setupNavigation() {
 }
 
 function setupSidebar() {
-  const toggle = document.getElementById("sidebarToggle");
-  const sidebar = document.getElementById("sidebar");
+    const toggle = document.getElementById("sidebarToggle");
+    const sidebar = document.getElementById("sidebar");
 
-  toggle.addEventListener("click", () => {
-    sidebar.classList.toggle("active");
-  });
+    if (toggle && sidebar) {
+        toggle.addEventListener("click", () => {
+            sidebar.classList.toggle("active");
+        });
+    }
 }
+
 
 function navigateTo(page) {
   document.querySelectorAll(".nav-item").forEach((item) => {
