@@ -110,6 +110,7 @@ hackaton-sge/
 │   └── server.js           # Entry point do servidor (Porta/Listen)
 ├── .env                    # Credenciais (NÃO COMMITAR)
 └── package.json            # Dependências do projeto
+```
 
 Pré-requisitosPara rodar este projeto localmente, você precisará de:Node.js (v18 ou superior) instalado.PostgreSQL instalado e rodando (ou acesso a um banco na nuvem como Render/Neon).Uma conta Google Cloud Platform ativa para configurar a API do Gmail.⚙️ Configuração e Instalação1. Clonar o RepositórioBashgit clone [https://github.com/seu-usuario/hackaton-sge.git](https://github.com/seu-usuario/hackaton-sge.git)
 cd hackaton-sge
