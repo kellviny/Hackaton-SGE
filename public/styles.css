@@ -36,6 +36,15 @@ body {
   overflow-x: hidden;
 }
 
+.btn-small {
+    padding: 4px 6px;
+    font-size: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
 /* Sidebar */
 .sidebar {
   position: fixed;

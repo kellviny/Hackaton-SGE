@@ -28,6 +28,42 @@ const statesData = {
   TO: ["Palmas", "Araguaína", "Gurupi"],
 };
 
+function filterHistory() {
+    const search = document.getElementById("historySearch").value.toLowerCase();
+    const dateFilter = document.getElementById("historyDateFilter").value;
+    const stateFilter = document.getElementById("historyStateFilter").value;
+
+    const rows = document.querySelectorAll("#historyTableBody tr");
+
+    rows.forEach(row => {
+        const sender = row.querySelector("td:nth-child(1)")?.textContent.toLowerCase() || "";
+        const recipient = row.querySelector("td:nth-child(2)")?.textContent.toLowerCase() || "";
+        const subject = row.querySelector("td:nth-child(3)")?.textContent.toLowerCase() || "";
+        const date = row.querySelector("td:nth-child(4)")?.textContent.trim() || "";
+        const localField = row.querySelector("td:nth-child(5)")?.textContent.trim() || "";
+
+        const state = localField.split("/")[0].trim();
+
+        let matchesSearch =
+            sender.includes(search) ||
+            recipient.includes(search) ||
+            subject.includes(search) ||
+            localField.toLowerCase().includes(search);
+
+        let matchesDate = !dateFilter || date === dateFilter;
+
+        let matchesState = stateFilter === "all" || state === stateFilter;
+
+        if (matchesSearch && matchesDate && matchesState) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
+
+
+
 async function loadCities() {
   const state = document.getElementById("state").value;
   const citySelect = document.getElementById("city");
@@ -88,7 +124,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupNavigation();
   setupSidebar();
   updateDashboard();
+
+  setInterval(async () => {
+    await loadEmails();
+    renderPendingEmails();
+    renderHistory();
+    updateDashboard();
+  }, 30000);
 });
+
 
 function initializeApp() {
   document.getElementById("currentDate").textContent =
@@ -180,6 +224,15 @@ function updateStateChart() {
     }
   });
 }
+
+async function syncEmails() {
+  await fetch("/api/emails/sync");
+  await loadEmails();
+  renderPendingEmails();
+  renderHistory();
+  updateDashboard();
+}
+
 
 function updateTrendChart() {
   const ctx = document.getElementById("trendChart");

@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
+const SCOPES = ["https://www.googleapis.com/auth/gmail.modify"];
 
 function createOAuthClient() {
   const oAuth2Client = new google.auth.OAuth2(
@@ -14,15 +14,12 @@ function createOAuthClient() {
   );
 
   oAuth2Client.setCredentials({
-    access_token: process.env.GOOGLE_ACCESS_TOKEN,
-    refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
-    scope: process.env.GOOGLE_TOKEN_SCOPE,
-    token_type: process.env.GOOGLE_TOKEN_TYPE,
-    expiry_date: Date.now() + Number(process.env.GOOGLE_TOKEN_EXPIRES_IN) * 1000
+    refresh_token: process.env.GOOGLE_REFRESH_TOKEN
   });
 
   return oAuth2Client;
 }
+
 
 function getBodyFromPayload(payload) {
   const getPart = (p) => {
